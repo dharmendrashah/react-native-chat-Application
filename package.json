@@ -24,13 +24,18 @@
     "react-native-gesture-handler": "^1.6.1",
     "react-native-gifted-chat": "^0.11.4",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
+    "react-native-linear-gradient": "^2.5.6",
     "react-native-reanimated": "^1.8.0",
     "react-native-responsive-screen": "^1.4.1",
+    "react-native-router-flux": "^4.2.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.5.0",
+    "react-native-simple-toast": "^1.1.1",
     "react-native-tab-view": "^2.14.0",
     "react-native-tab-view-viewpager-adapter": "^1.0.7",
-    "react-native-vector-icons": "^6.6.0"
+    "react-native-touchable-scale": "^2.1.1",
+    "react-native-vector-icons": "^6.6.0",
+    "react-router-native": "^5.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

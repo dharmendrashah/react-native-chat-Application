@@ -2,20 +2,27 @@ import * as React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, StatusBar } from 'react-native';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 
+//navigation
+import {NavigationContainer,useNavigation } from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+
+//imort chat
+import Chat from './chat';
 //rect-natve-elemnts
 
-import {Header} from 'react-native-elements';
+import {Header,Icon} from 'react-native-elements';
 
 //importing the headers
+//importinng the importnat files
 
-const FirstRoute = () => (
-  <View style={[styles.scene, { backgroundColor: '#fafafa' }]} />
-);
+import Private from './../users/private';
+import Group from './../users/group';
+import Search from './../users/search';
 
+const FirstRoute = () => (<Private/>);
+const SecondRoute = () => (<Group/>);
+const ThirdRoute = () => (<Search/>);
 
-const SecondRoute = () => (
-  <View style={[styles.scene, { backgroundColor: '#fafafa' }]} />
-);
 
 // This is our placeholder component for the tabs
 // This will be rendered when a tab isn't loaded yet
@@ -34,12 +41,20 @@ import Logo from '../../images/logo.png';
 //importing the header
 import AllHeader from '../tinyComponent/header';
 
+//searchBar
+import Searchbar from './search';
+
+
+
+
 export default class Users extends React.Component {
+
   state = {
-    index: 0,
+    index: 2,
     routes: [
-      { key: 'first', title: 'Private message' },
-      { key: 'second', title: 'Group message' },
+      { key: 'first', title: 'Private' },
+      { key: 'second', title: 'Group' },
+      { key: 'third', title: 'Search' },
     ],
   };
 
@@ -47,18 +62,21 @@ export default class Users extends React.Component {
 
   _renderLazyPlaceholder = ({ route }) => <LazyPlaceholder route={route} />;
 
-  render() {
+  render(){
+    
     return (
       <>
        <Header
                 placement="left"
                 leftComponent={{ icon: 'chat', color: '#fff' }}
                 centerComponent={
-                  <Text>
+                  <Text
+                  style={styles.title}
+                  >
                    Instant chat
                   </Text>
                 }
-                rightComponent={{ icon: 'search', color: '#fff' }}
+              
             />
     <TabView
         lazy
@@ -66,13 +84,11 @@ export default class Users extends React.Component {
         renderScene={SceneMap({
           first: FirstRoute,
           second: SecondRoute,
-          
+          third: ThirdRoute
         })}
         renderLazyPlaceholder={this._renderLazyPlaceholder}
         onIndexChange={this._handleIndexChange}
         initialLayout={{ width: Dimensions.get('window').width }}
-        
-       
       />
      </>
       
@@ -90,4 +106,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  title:{
+    fontWeight: 'bold',
+    color: 'white',
+    fontSize: 30
+  }
 });

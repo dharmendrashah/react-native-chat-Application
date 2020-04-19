@@ -22,7 +22,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-import {Toast, ActionSheet, Root} from 'native-base';
+import {ActionSheet, Root} from 'native-base';
 
 
 import Logo from './../../images/logo.png';
@@ -31,6 +31,8 @@ import Logo from './../../images/logo.png';
 //navigation
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+
+//import Toast from 'react-native-simple-toast';
 
 const {width: WIDTH} = Dimensions.get('window');
 
@@ -52,13 +54,15 @@ export default class Login extends Component {
 
   _handlePress() {
            if(this.state.email === ''){
-          Alert.alert('Email feild is empty')
+         // Alert.alert('Email feild is empty')
+         ToastAndroid.show('Email feild is empty.',ToastAndroid.LONG);
          var userEmail = '';
       }else if(this.state.email !== ''){
           console.log('Email : '+ this.state.email)
           let emailValidate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
           if(emailValidate.test(this.state.email) === false){
-              Alert.alert('Email is invalid')
+              //Alert.alert('Email is invalid')
+              ToastAndroid.show('Email is invalid.',ToastAndroid.LONG);
               console.log('email is not correct')
              var userEmail = '';
           }else(
@@ -71,7 +75,8 @@ export default class Login extends Component {
       }
             
             if (this.state.password === '') {
-              Alert.alert('Password feild is empty !');
+              //Alert.alert('Password feild is empty !');
+              ToastAndroid.show('Password feild is empty !',ToastAndroid.LONG);
             } else if (this.state.password !== '') {
               var userPassword = this.state.password;
               console.log('Password : ' + this.state.password);
