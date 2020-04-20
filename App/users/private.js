@@ -12,8 +12,9 @@ import LinearGradient from 'react-native-linear-gradient'; // Only if no expo
 
 import { useRoute  } from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+
+import { Actions } from 'react-native-router-flux'
 //include chat
-import Chat from '../pages/chat';
 //move to the chat with params
 //users
 const list = [
@@ -34,8 +35,7 @@ const list = [
 
 //Overlay
 export default class Private extends React.Component{
-    render(){   
-   
+    render(){
         return (
           <>
             <View style={{backgroundColor: 'rgb(236, 240, 233)'}}>
@@ -44,7 +44,7 @@ export default class Private extends React.Component{
                   Component={TouchableScale}
                   friction={60}
                   tension={500}
-                  onPress={() => console.log(this.props)}
+                  onPress={() => Actions.Chat({id:'fdfdfdfd'})} //here we will move to the chat
                   activeScale={0.95}
                   key={i}
                   leftAvatar={{source: {uri: l.avatar_url}}}

@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, StatusBar } from 'react-native';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+import { Actions } from 'react-native-router-flux'
 
-//navigation
-import {NavigationContainer,useNavigation } from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
 
 //imort chat
 import Chat from './chat';
@@ -45,10 +43,12 @@ import AllHeader from '../tinyComponent/header';
 import Searchbar from './search';
 
 
+ 
 
 
 export default class Users extends React.Component {
-
+   
+   
   state = {
     index: 2,
     routes: [
@@ -66,30 +66,19 @@ export default class Users extends React.Component {
     
     return (
       <>
-       <Header
-                placement="left"
-                leftComponent={{ icon: 'chat', color: '#fff' }}
-                centerComponent={
-                  <Text
-                  style={styles.title}
-                  >
-                   Instant chat
-                  </Text>
-                }
-              
-            />
-    <TabView
-        lazy
-        navigationState={this.state}
-        renderScene={SceneMap({
-          first: FirstRoute,
-          second: SecondRoute,
-          third: ThirdRoute
-        })}
-        renderLazyPlaceholder={this._renderLazyPlaceholder}
-        onIndexChange={this._handleIndexChange}
-        initialLayout={{ width: Dimensions.get('window').width }}
-      />
+       <Header placement="left" leftComponent={{ icon: 'chat', color: '#fff' }}  centerComponent={ <Text style={styles.title} > Instant chat </Text> } rightComponent={<Icon name='settings' color='white' onPress={()  => (Actions.Profile())}/>}/>
+        <TabView
+            lazy
+            navigationState={this.state}
+            renderScene={SceneMap({
+              first: FirstRoute,
+              second: SecondRoute,
+              third: ThirdRoute
+            })}
+            renderLazyPlaceholder={this._renderLazyPlaceholder}
+            onIndexChange={this._handleIndexChange}
+            initialLayout={{ width: Dimensions.get('window').width }}
+          />
      </>
       
        

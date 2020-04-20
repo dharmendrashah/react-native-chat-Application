@@ -28,9 +28,8 @@ import {ActionSheet, Root} from 'native-base';
 import Logo from './../../images/logo.png';
 
 
-//navigation
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+
+import { Actions } from 'react-native-router-flux'
 
 //import Toast from 'react-native-simple-toast';
 
@@ -40,6 +39,7 @@ import Register from './register'
 
 import Users from './users';
 
+import auth from '@react-native-firebase/auth';
 
 export default class Login extends Component {
   constructor(props) {
@@ -86,18 +86,26 @@ export default class Login extends Component {
 
             //move to the Friends
             if(userEmail !== '' && this.state.password !== ''){
-              const { navigate } = this.props.navigation;
-              navigate('Users', {
-                    screen: 'Users',
-                    params: { user: 'jane' },
-                  });
+              const correctEmail = userEmail;
+              const correctPassword = this.state.password;
+
+              //with firebase login
+                auth().signInWithEmailAndPassword(correctEmail, correctPassword).then(() => {
+                  console.log('User found and Logging in')
+                  Actions.Users();
+                }).catch(error => {
+                  if(error.code === 'auth/user-not-found'){
+                    console.log('User not found please try with correct one');
+                    ToastAndroid.show('User not found please try again', ToastAndroid.LONG)
+                  }
+                })
             }
          
      
  
   }
   render() {
-     const { navigate } = this.props.navigation;
+     
      //console.log(this.props.navigation)
     return (
       <Root>
@@ -135,7 +143,7 @@ export default class Login extends Component {
                <Text
                 style={styles.textLink}
                 onPress={() =>
-                  navigate(Register)
+                  Actions.Register()
                 }>
                 Create New.
               </Text> 

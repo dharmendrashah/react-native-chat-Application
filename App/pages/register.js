@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component,useState, useEffect} from 'react';
 import {
   TextInput,
   StyleSheet,
@@ -15,30 +15,24 @@ import {
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 import {Input, SocialIcon, Button} from 'react-native-elements';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-
+import { Actions } from 'react-native-router-flux'
 import {Toast, ActionSheet, Root} from 'native-base';
-
-
 import Logo from './../../images/logo.png';
-
-
-//navigation
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-
 const {width: WIDTH} = Dimensions.get('window');
 
 //login
 import Login from './login';
 import Users from './users';
 
+import auth from '@react-native-firebase/auth';
+
 export default class Register extends Component {
+
   
   constructor(props){
       super(props);
@@ -49,72 +43,102 @@ export default class Register extends Component {
           confirmPassword: ''
       }
   }
-
   _handlePress(){
       if(this.state.name === ''){
-           Alert.alert('Name feild is empty')
-           userName = '';
+           //Alert.alert('Name feild is empty')
+           ToastAndroid.show('Name feild is empty.',ToastAndroid.SHORT);
+          var userName = '';
       }else if(this.state.name !== ''){
          // console.log('name : '+ this.state.name)
-          userName = this.state.name
+        var  userName = this.state.name
       }
 
 
       if(this.state.email === ''){
-          Alert.alert('Email feild is empty')
-          userEmail = '';
+         // Alert.alert('Email feild is empty')
+         ToastAndroid.show('Email feild is empty.',ToastAndroid.SHORT);
+        var  userEmail = '';
       }else if(this.state.email !== ''){
           //console.log('Email : '+ this.state.email)
           let emailValidate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
           if(emailValidate.test(this.state.email) === false){
-              Alert.alert('Email is invalid')
+             // Alert.alert('Email is invalid')
+             ToastAndroid.show('Email is invalid.',ToastAndroid.SHORT);
               console.log('email is not correct')
              var userEmail = '';
           }else(
-              userEmail = this.state.email
+           userEmail = this.state.email
           )
           
       }
 
       if(this.state.password === ''){
-          Alert.alert('Password feild is empty')
-          userPassword = '';
+        //  Alert.alert('Password feild is empty')
+        ToastAndroid.show('Password feild is empty.',ToastAndroid.SHORT);
+         var userPassword = '';
       }else if(this.state.password !== ''){
          // console.log('Password : '+ this.state.password)
-          userPassword = this.state.password
+         var userPassword = this.state.password
       }
 
       if(this.state.confirmPassword === ''){
-          Alert.alert('Confirm Password feild is empty')
-          userConfirmPassword = '';
+         // Alert.alert('Confirm Password feild is empty')
+         ToastAndroid.show('Confirm Password feild is empty.',ToastAndroid.SHORT);
+         var userConfirmPassword = '';
       }else if(this.state.confirmPassword !== ''){
          // console.log('Confirm password : '+this.state.confirmPassword)
-          userConfirmPassword = this.state.confirmPassword
+         var userConfirmPassword = this.state.confirmPassword
       }
 
-      if(userName !== '' && userEmail !== '' && userPassword !== '' && userConfirmPassword !== ''){
-         // console.log('Name : '+userName + ' Email : '+userEmail+' Password : '+ userPassword+ ' Confirm Password : '+ userConfirmPassword)
-          //adding new wrapper to the non empty variable
-        var confName = userName; //this is final
+      if(this.state.name !== '' && userEmail !== '' && userPassword !== '' && userConfirmPassword !== ''){
+        
+        var confName = this.state.name; //this is final
         var confEmail = userEmail; //this is final
         if(userPassword !== userConfirmPassword){
-            Alert.alert('Password do not match')
+           ToastAndroid.show('Password do not match', ToastAndroid.SHORT)
             var confPassword = '';
         }
 
-        if(confPassword !== ''){
-            var correctPassword = this.state.password; //this is final
-
-              const { navigate } = this.props.navigation;
-              navigate('Users', {
-                    screen: 'Users',
-                    params: { user: 'jane' },
-                  });
-            
-              
-            //here we have to send the user to the chat bar
-            
+        if(userPassword !== ''){
+          if(userPassword.length >= 8){
+             var correctPassword = userPassword; //this is final
+          }else{
+            ToastAndroid.show('Password length is less than 8 char please make it atleast 8 char long', ToastAndroid.SHORT)
+          }
+        }else{
+          ToastAndroid.show('cool down bro do not press it too hard', ToastAndroid.SHORT)
         }
+
+        //make the wish
+        if(confName !== '' && confEmail !== '' && correctPassword !== ''){
+          console.log("it's time to make the wish")
+          // console.log({
+          //   Name:confName,
+          //   Email:confEmail,
+          //   Password:correctPassword
+          // })
+          auth()
+                .createUserWithEmailAndPassword(confEmail, correctPassword)
+                .then(() => {
+                  console.log('User account created & signed in!');
+                  ToastAndroid.show('welcome', ToastAndroid.SHORT)
+                  Actions.Users();
+                })
+                .catch(error => {
+                  if (error.code === 'auth/email-already-in-use') {
+                   console.log('Email is already present')
+                    ToastAndroid.show('That email address is already in use!. Please try to login with this email', ToastAndroid.SHORT)
+                  }
+
+                  if (error.code === 'auth/invalid-email') {
+                    console.log('That email address is invalid!');
+                    ToastAndroid.show('The email address you provide is incorrect Please type the correct email', ToastAndroid.SHORT)
+                  }
+
+                  //console.error(error);
+                });
+        }
+
       }
 
       
@@ -172,7 +196,7 @@ export default class Register extends Component {
                <Text
                 style={styles.textLink}
                 onPress={
-                  () => navigate('Home')
+                  () => Actions.Login()
                 }>
                 Login.
               </Text> 
