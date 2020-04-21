@@ -13,44 +13,57 @@ import auth from '@react-native-firebase/auth';
 
 
 
-export default class UserProfile extends React.Component{
+export default class UserProfile extends React.Component {
+                 UNSAFE_componentWillMount(props) {
+                   auth().onAuthStateChanged((user) => {
+                     if (!user) {
+                       Actions.Login();
+                     }
+                   });
+                 }
+                 _;
+                 render() {
+                   //logout the user
+                   const Logout = () => {
+                     auth()
+                       .signOut()
+                       .then(() => Actions.Loading());
+                   };
+                   return (
+                     <>
+                       <View style={styles.container}>
+                         <View style={styles.header}></View>
+                         <Image style={styles.avatar} source={Logo} />
+                         <View style={styles.body}>
+                           <View style={styles.bodyContent}>
+                             <Text style={styles.name}>John Doe</Text>
+                             <Text style={styles.info}>
+                               UX Designer / Mobile developer
+                             </Text>
+                             <Text style={styles.description}>
+                               Lorem ipsum dolor sit amet, saepe sapientem eu
+                               nam. Qui ne assum electram expetendis, omittam
+                               deseruisse consequuntur ius an,
+                             </Text>
 
- 
-  _
-    render(){
-       //logout the user
-  const Logout = () => {
-      auth().signOut().then(() => (
-      Actions.Loading()
-      ));
-  }
-        return(
-            <>
-            <View style={styles.container}>
-          <View style={styles.header}></View>
-          <Image style={styles.avatar} source={Logo}/>
-          <View style={styles.body}>
-            <View style={styles.bodyContent}>
-              <Text style={styles.name}>John Doe</Text>
-              <Text style={styles.info}>UX Designer / Mobile developer</Text>
-              <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
-              
-              <TouchableOpacity style={styles.buttonContainer}>
-                <Text>Opcion 1</Text>  
-              </TouchableOpacity>              
-              <TouchableOpacity style={styles.buttonContainer}>
-                <Text>Opcion 2</Text> 
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonContainer} onPress={() => Logout()}>
-                <Text>Logout</Text> 
-              </TouchableOpacity>
-            </View>
-        </View>
-      </View>
-            </>
-        );
-    }
-}
+                             <TouchableOpacity style={styles.buttonContainer}>
+                               <Text>Opcion 1</Text>
+                             </TouchableOpacity>
+                             <TouchableOpacity style={styles.buttonContainer}>
+                               <Text>Opcion 2</Text>
+                             </TouchableOpacity>
+                             <TouchableOpacity
+                               style={styles.buttonContainer}
+                               onPress={() => Logout()}>
+                               <Text>Logout</Text>
+                             </TouchableOpacity>
+                           </View>
+                         </View>
+                       </View>
+                     </>
+                   );
+                 }
+               }
 
 const styles = StyleSheet.create({
   header:{

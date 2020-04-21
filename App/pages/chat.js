@@ -6,7 +6,7 @@ export default class Chat extends React.Component {
     messages: [],
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.setState({
       messages: [
         {

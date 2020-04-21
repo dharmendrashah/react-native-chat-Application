@@ -11,7 +11,8 @@ import {
   ToastAndroid,
   Image,
   Linking,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -40,120 +41,153 @@ import Register from './register'
 import Users from './users';
 
 import auth from '@react-native-firebase/auth';
+import TouchableScale from 'react-native-touchable-scale'; // https://github.com/kohver/react-native-touchable-scale
 
 export default class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      password: '',
-    };
-  }
 
-  
+    
+                 UNSAFE_componentWillMount(props) {
+                   auth().onAuthStateChanged((user) => {
+                     if (user) {
+                       Actions.Users();
+                     }
+                   });
+                  this.hideLoader();
+                 }
+                  showLoader = () => { this.setState({ showLoader:true }); };
+                  hideLoader = () => { this.setState({ showLoader:false }); };
 
-  _handlePress() {
-           if(this.state.email === ''){
-         // Alert.alert('Email feild is empty')
-         ToastAndroid.show('Email feild is empty.',ToastAndroid.LONG);
-         var userEmail = '';
-      }else if(this.state.email !== ''){
-          console.log('Email : '+ this.state.email)
-          let emailValidate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-          if(emailValidate.test(this.state.email) === false){
-              //Alert.alert('Email is invalid')
-              ToastAndroid.show('Email is invalid.',ToastAndroid.LONG);
-              console.log('email is not correct')
-             var userEmail = '';
-          }else(
-              userEmail = this.state.email
+                 constructor(props) {
+                   super(props);
+                   this.state = {
+                     email: '',
+                     password: '',
+                   };
+                 }
 
-              //validate the user email
+                 _handlePress() {
+                   this.showLoader();
+                   if (this.state.email === '') {
+                     // Alert.alert('Email feild is empty')
+                     ToastAndroid.show(
+                       'Email feild is empty.',
+                       ToastAndroid.LONG,
+                     );
+                     var userEmail = '';
+                   } else if (this.state.email !== '') {
+                     console.log('Email : ' + this.state.email);
+                     let emailValidate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                     if (emailValidate.test(this.state.email) === false) {
+                       //Alert.alert('Email is invalid')
+                       ToastAndroid.show(
+                         'Email is invalid.',
+                         ToastAndroid.LONG,
+                       );
+                       console.log('email is not correct');
+                       var userEmail = '';
+                     } else
+                       userEmail = this.state.email;
 
-          )
-          
-      }
-            
-            if (this.state.password === '') {
-              //Alert.alert('Password feild is empty !');
-              ToastAndroid.show('Password feild is empty !',ToastAndroid.LONG);
-            } else if (this.state.password !== '') {
-              var userPassword = this.state.password;
-              console.log('Password : ' + this.state.password);
-              
-            }
+                       //validate the user email
+                   }
 
+                   if (this.state.password === '') {
+                     //Alert.alert('Password feild is empty !');
+                     ToastAndroid.show(
+                       'Password feild is empty !',
+                       ToastAndroid.LONG,
+                     );
+                   } else if (this.state.password !== '') {
+                     var userPassword = this.state.password;
+                     console.log('Password : ' + this.state.password);
+                   }
 
-            //move to the Friends
-            if(userEmail !== '' && this.state.password !== ''){
-              const correctEmail = userEmail;
-              const correctPassword = this.state.password;
+                   //move to the Friends
+                   if (userEmail !== '' && this.state.password !== '') {
+                     const correctEmail = userEmail;
+                     const correctPassword = this.state.password;
 
-              //with firebase login
-                auth().signInWithEmailAndPassword(correctEmail, correctPassword).then(() => {
-                  console.log('User found and Logging in')
-                  Actions.Users();
-                }).catch(error => {
-                  if(error.code === 'auth/user-not-found'){
-                    console.log('User not found please try with correct one');
-                    ToastAndroid.show('User not found please try again', ToastAndroid.LONG)
-                  }
-                })
-            }
-         
-     
- 
-  }
-  render() {
-     
-     //console.log(this.props.navigation)
-    return (
-      <Root>
-        <View style={styles.container}>
-          <View style={styles.logoConatiner}>
-            <Image source={Logo} style={styles.logo} />
-            <Text style={styles.logoText}>Instant Chat</Text>
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={'Email'}
-              placeholderTextColor={'rgba(255,255,255,0.7)'}
-              underlineColorAndroid="transparent"
-              onChangeText={(text) => this.setState({email: text})}
-            />
-            <TextInput
-              style={styles.inputPassword}
-              placeholder={'Password'}
-              secureTextEntry={true}
-              placeholderTextColor={'rgba(255,255,255,0.7)'}
-              underlineColorAndroid="transparent"
-              onChangeText={(text) => this.setState({password: text})}
-            />
-            <Button
-              iconRight
-              style={styles.btnLogin}
-              icon={<Icon name="arrow-right" size={25} color="#fff" />}
-              title="Login        "
-              onPress={() => this._handlePress()}
-            />
-
-            <Text style={{color: 'black', textAlign: 'center'}}>
-              Don't have an account &nbsp;
-               <Text
-                style={styles.textLink}
-                onPress={() =>
-                  Actions.Register()
-                }>
-                Create New.
-              </Text> 
-            </Text>
-          </View>
-        </View>
-      </Root>
-    );
-  }
-}
+                     //with firebase login
+                     auth()
+                       .signInWithEmailAndPassword(
+                         correctEmail,
+                         correctPassword,
+                       )
+                       .then(() => {
+                         console.log('User found and Logging in');
+                         Actions.Users();
+                       })
+                       .catch((error) => {
+                         if (error.code === 'auth/user-not-found') {
+                           console.log(
+                             'User not found please try with correct one',
+                           );
+                           ToastAndroid.show(
+                             'User not found please try again',
+                             ToastAndroid.LONG,
+                           );
+                         }
+                       });
+                   }
+                 }
+                 render() {
+                   return (
+                     <Root>
+                       <View style={styles.container}>
+                         <View style={styles.logoConatiner}>
+                           <Image source={Logo} style={styles.logo} />
+                           <Text style={styles.logoText}>Instant Chat</Text>
+                         </View>
+                         <View style={styles.inputContainer}>
+                           <TextInput
+                             style={styles.input}
+                             placeholder={'Email'}
+                             placeholderTextColor={'rgba(255,255,255,0.7)'}
+                             underlineColorAndroid="transparent"
+                             onChangeText={(text) =>
+                               this.setState({email: text})
+                             }
+                           />
+                           <TextInput
+                             style={styles.inputPassword}
+                             placeholder={'Password'}
+                             secureTextEntry={true}
+                             placeholderTextColor={'rgba(255,255,255,0.7)'}
+                             underlineColorAndroid="transparent"
+                             onChangeText={(text) =>
+                               this.setState({password: text})
+                             }
+                           />
+                           
+                           <Button
+                             iconRight
+                             style={styles.btnLogin}
+                             icon={
+                               <Icon
+                                 name="arrow-right"
+                                 size={25}
+                                 color="#fff"
+                               />
+                             }
+                             title="Login        "
+                             onPress={() => this._handlePress()}
+                             
+                           />
+                        <ActivityIndicator animating={this.state.showLoader} size="small" color="#000000" hidesWhenStopped={true} />
+                           <Text style={{color: 'black', textAlign: 'center'}}>
+                             Don't have an account &nbsp;
+                             <Text
+                               style={styles.textLink}
+                               onPress={() => Actions.Register()}>
+                               Create New.
+                             </Text>
+                           </Text>
+                         </View>
+                       </View>
+                     </Root>
+                   );
+                 }
+               }
 
 const styles = StyleSheet.create({
   container: {

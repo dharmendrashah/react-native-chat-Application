@@ -10,6 +10,7 @@ import TouchableScale from 'react-native-touchable-scale'; // https://github.com
 import LinearGradient from 'react-native-linear-gradient'; // Only if no expo
 
 
+
 import { useRoute  } from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
