@@ -44,18 +44,27 @@ import auth from '@react-native-firebase/auth';
 import TouchableScale from 'react-native-touchable-scale'; // https://github.com/kohver/react-native-touchable-scale
 
 export default class Login extends Component {
-
-    
                  UNSAFE_componentWillMount(props) {
                    auth().onAuthStateChanged((user) => {
                      if (user) {
                        Actions.Users();
                      }
                    });
-                  this.hideLoader();
+                   this.hideLoader();
+                    this.showButton();
                  }
-                  showLoader = () => { this.setState({ showLoader:true }); };
-                  hideLoader = () => { this.setState({ showLoader:false }); };
+                 showLoader = () => {
+                   this.setState({showLoader: true});
+                 };
+                 hideLoader = () => {
+                   this.setState({showLoader: false});
+                 };
+                 showButton = () => {
+                   this.setState({showButton: false});
+                 };
+                 hideButton = () => {
+                   this.setState({showButton: true});
+                 };
 
                  constructor(props) {
                    super(props);
@@ -67,6 +76,7 @@ export default class Login extends Component {
 
                  _handlePress() {
                    this.showLoader();
+                   this.hideButton();
                    if (this.state.email === '') {
                      // Alert.alert('Email feild is empty')
                      ToastAndroid.show(
@@ -74,6 +84,8 @@ export default class Login extends Component {
                        ToastAndroid.LONG,
                      );
                      var userEmail = '';
+                     this.hideLoader();
+                      this.hideButton();
                    } else if (this.state.email !== '') {
                      console.log('Email : ' + this.state.email);
                      let emailValidate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -85,10 +97,11 @@ export default class Login extends Component {
                        );
                        console.log('email is not correct');
                        var userEmail = '';
-                     } else
-                       userEmail = this.state.email;
+                       this.hideLoader();
+                        this.hideButton();
+                     } else userEmail = this.state.email;
 
-                       //validate the user email
+                     //validate the user email
                    }
 
                    if (this.state.password === '') {
@@ -97,6 +110,8 @@ export default class Login extends Component {
                        'Password feild is empty !',
                        ToastAndroid.LONG,
                      );
+                     this.hideLoader();
+                      this.hideButton();
                    } else if (this.state.password !== '') {
                      var userPassword = this.state.password;
                      console.log('Password : ' + this.state.password);
@@ -119,13 +134,19 @@ export default class Login extends Component {
                        })
                        .catch((error) => {
                          if (error.code === 'auth/user-not-found') {
-                           console.log(
-                             'User not found please try with correct one',
-                           );
                            ToastAndroid.show(
                              'User not found please try again',
                              ToastAndroid.LONG,
                            );
+                           this.hideLoader();
+                            this.hideButton();
+                         } else {
+                           ToastAndroid.show(
+                             'User not found please try again',
+                             ToastAndroid.LONG,
+                           );
+                           this.hideLoader();
+                            this.hideButton();
                          }
                        });
                    }
@@ -158,9 +179,10 @@ export default class Login extends Component {
                                this.setState({password: text})
                              }
                            />
-                           
+
                            <Button
                              iconRight
+                             disabled={false}
                              style={styles.btnLogin}
                              icon={
                                <Icon
@@ -171,9 +193,13 @@ export default class Login extends Component {
                              }
                              title="Login        "
                              onPress={() => this._handlePress()}
-                             
                            />
-                        <ActivityIndicator animating={this.state.showLoader} size="small" color="#000000" hidesWhenStopped={true} />
+                           <ActivityIndicator
+                             animating={this.state.showLoader}
+                             size="small"
+                             color="#000000"
+                             hidesWhenStopped={true}
+                           />
                            <Text style={{color: 'black', textAlign: 'center'}}>
                              Don't have an account &nbsp;
                              <Text

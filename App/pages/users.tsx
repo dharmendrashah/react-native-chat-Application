@@ -5,6 +5,9 @@ import { Actions } from 'react-native-router-flux'
 
 //imort chat
 import Chat from './chat';
+//asyncStorage
+import AsyncStorage from '@react-native-community/async-storage';
+
 //rect-natve-elemnts
 
 import {Header,Icon} from 'react-native-elements';
@@ -46,30 +49,43 @@ import Searchbar from './search';
 
 import auth from '@react-native-firebase/auth';
 export default class Users extends React.Component {
+                 backAction = () => {
+                   Alert.alert(
+                     'Hold on!',
+                     'Are you sure you want to go back?',
+                     [
+                       {
+                         text: 'Cancel',
+                         onPress: () => null,
+                         style: 'cancel',
+                       },
+                       {text: 'YES', onPress: () => BackHandler.exitApp()},
+                     ],
+                   );
+                   return true;
+                 };
 
-
-            backAction = () => {
-    Alert.alert("Hold on!", "Are you sure you want to go back?", [
-      {
-        text: "Cancel",
-        onPress: () => null,
-        style: "cancel"
-      },
-      { text: "YES", onPress: () => BackHandler.exitApp() }
-    ]);
-    return true;
-  };
-
-  componentDidMount() {
-    BackHandler.addEventListener("hardwareBackPress", this.backAction);
-  }
+                 componentDidMount() {
+                   BackHandler.addEventListener(
+                     'hardwareBackPress',
+                     this.backAction,
+                   );
+                   
+                   
+                 }
                  UNSAFE_componentWillMount(props) {
-                   BackHandler.removeEventListener("hardwareBackPress", this.backAction);
+                   BackHandler.removeEventListener(
+                     'hardwareBackPress',
+                     this.backAction,
+                   );
                    auth().onAuthStateChanged((user) => {
                      if (!user) {
                        Actions.Login();
                      }
+                     console.log(user)
                    });
+                   
+                    
                  }
 
                  state = {
@@ -86,6 +102,7 @@ export default class Users extends React.Component {
                  _renderLazyPlaceholder = ({route}) => (
                    <LazyPlaceholder route={route} />
                  );
+                
 
                  render() {
                    return (

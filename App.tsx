@@ -12,14 +12,14 @@ import * as React from 'react';
 import { Router, Scene } from 'react-native-router-flux'
   //Index
     import Loading from './App/tinyComponent/loading';
-    import Login from './App/pages/login.js';
-    import Register from './App/pages/register.js';
+    import Login from './App/pages/login';
+    import Register from './App/pages/register';
     import Users from './App/pages/users';
     import Searchbar from './App/pages/search';
     import Chat from './App/pages/chat';
     import Profile from './App/pages/profile';
-//all areound header
-    //some variables
+    import PofileSave from './App/userProfile/updatePrifile';
+
  
 
 const App: () => React$Node = () => {
@@ -33,7 +33,9 @@ const App: () => React$Node = () => {
             <Scene key ="Users" component= {Users} title = "Users" hideNavBar={true} />
             <Scene key ="Searchbar" component= {Searchbar} title = "Searchbar"/>
             <Scene key ="Chat" component= {Chat} title = "Chat" />
-            <Scene key="Profile" component = {Profile} title = "Profile"/>
+            <Scene key="Profile" component = {Profile} title = "Profile" hideNavBar={true}/>
+            <Scene key="PofileSave" component = {PofileSave} title = "PofileSave" hodeNavBar={true}/>
+            
         </Scene>
       </Router>
     </>

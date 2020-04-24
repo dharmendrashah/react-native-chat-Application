@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "203919598201",
+    "firebase_url": "https://chatapp-769b6.firebaseio.com",
+    "project_id": "chatapp-769b6",
+    "storage_bucket": "chatapp-769b6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203919598201:android:924cf4568c32d0ca19eaa8",
+        "android_client_info": {
+          "package_name": "com.chatone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203919598201-akbo0nk17aidfkkbq7g2c9s9553pansp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chatone",
+            "certificate_hash": "a5be69444f28663a33e7b6893c9b70171f71c832"
+          }
+        },
+        {
+          "client_id": "203919598201-01g7ivou11b1ggua5n5vbu8rj3dpvd0m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFPs6N75Zku38xBBlBcseOlxMkhnLJ1As"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "203919598201-01g7ivou11b1ggua5n5vbu8rj3dpvd0m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203919598201:android:a0bf4507a54738fb19eaa8",
+        "android_client_info": {
+          "package_name": "com.company.InstantChat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203919598201-01g7ivou11b1ggua5n5vbu8rj3dpvd0m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFPs6N75Zku38xBBlBcseOlxMkhnLJ1As"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "203919598201-01g7ivou11b1ggua5n5vbu8rj3dpvd0m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

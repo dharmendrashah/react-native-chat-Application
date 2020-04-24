@@ -49,8 +49,12 @@ export default class UserProfile extends React.Component {
                              <TouchableOpacity style={styles.buttonContainer}>
                                <Text>Opcion 1</Text>
                              </TouchableOpacity>
-                             <TouchableOpacity style={styles.buttonContainer}>
-                               <Text>Opcion 2</Text>
+                             <TouchableOpacity style={styles.buttonContainer}
+                             onPress={
+                               ()=> Actions.Users()
+                             }
+                             >
+                               <Text>Go Back</Text>
                              </TouchableOpacity>
                              <TouchableOpacity
                                style={styles.buttonContainer}

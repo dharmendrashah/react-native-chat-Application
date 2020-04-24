@@ -2,7 +2,6 @@ import React, {Component,useState, useEffect} from 'react';
 import {
   TextInput,
   StyleSheet,
-  AsyncStorage,
   Text,
   View,
   StatusBar,
@@ -16,6 +15,9 @@ import {
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
+//asyncStorage
+import AsyncStorage from '@react-native-community/async-storage';
+
 import {Input, SocialIcon, Button} from 'react-native-elements';
 import {
   widthPercentageToDP as wp,
@@ -32,32 +34,77 @@ import Users from './users';
 
 import auth from '@react-native-firebase/auth';
 
+//firestore
+import firestore from '@react-native-firebase/firestore';
+import database from '@react-native-firebase/database';
+
+//moment for time and date
+import moment from 'moment';
 export default class Register extends Component {
                  UNSAFE_componentWillMount(props) {
                    auth().onAuthStateChanged((user) => {
                      if (user) {
-                       Actions.Users()
+                       Actions.Users();
                      }
                    });
                    this.hideLoader();
+                   this.showButton();
                  }
+                 showLoader = () => {
+                   this.setState({showLoader: true});
+                 };
+                 hideLoader = () => {
+                   this.setState({showLoader: false});
+                 };
+                 showButton = () => {
+                   this.setState({showButton: false});
+                 };
+                 hideButton = () => {
+                   this.setState({showButton: true});
+                 };
 
-                  showLoader = () => { this.setState({ showLoader:true }); };
-                  hideLoader = () => { this.setState({ showLoader:false }); };
+                 //button disable
 
                  constructor(props) {
-                   //get the auth data
-                   console.log(auth());
                    super(props);
                    this.state = {
                      name: '',
                      email: '',
+                     phone:'',
                      password: '',
-                     confirmPassword: '',
+                     confirmPassword: ''
+
+                     
                    };
                  }
                  _handlePress() {
                    this.showLoader();
+                    this.hideButton();
+
+                    //phone number
+                     if (this.state.phone === '') {
+                     ToastAndroid.show(
+                       'phone feild is empty.',
+                       ToastAndroid.SHORT,
+                     );
+                     var PhoneNumber = '';
+                     this.hideLoader();
+                     this.showButton();
+                   } else if (this.state.phone !== '') {
+                     
+                     if (this.state.phone.length > 10) {
+                       ToastAndroid.show(
+                         'Phone number length is greater than 10.',
+                         ToastAndroid.SHORT,
+                       );
+                       var PhoneNumber = '';
+                       this.hideLoader();
+                       this.showButton();
+                     } else {
+                       var PhoneNumber = this.state.phone;
+                     }
+                   }
+
                    if (this.state.name === '') {
                      //Alert.alert('Name feild is empty')
                      ToastAndroid.show(
@@ -65,6 +112,8 @@ export default class Register extends Component {
                        ToastAndroid.SHORT,
                      );
                      var userName = '';
+                     this.hideLoader();
+                     this.showButton();
                    } else if (this.state.name !== '') {
                      // console.log('name : '+ this.state.name)
                      var userName = this.state.name;
@@ -77,6 +126,8 @@ export default class Register extends Component {
                        ToastAndroid.SHORT,
                      );
                      var userEmail = '';
+                     this.hideLoader();
+                     this.showButton();
                    } else if (this.state.email !== '') {
                      //console.log('Email : '+ this.state.email)
                      let emailValidate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -88,6 +139,8 @@ export default class Register extends Component {
                        );
                        console.log('email is not correct');
                        var userEmail = '';
+                       this.hideLoader();
+                       this.showButton();
                      } else userEmail = this.state.email;
                    }
 
@@ -98,6 +151,8 @@ export default class Register extends Component {
                        ToastAndroid.SHORT,
                      );
                      var userPassword = '';
+                     this.hideLoader();
+                     this.showButton();
                    } else if (this.state.password !== '') {
                      // console.log('Password : '+ this.state.password)
                      var userPassword = this.state.password;
@@ -110,28 +165,25 @@ export default class Register extends Component {
                        ToastAndroid.SHORT,
                      );
                      var userConfirmPassword = '';
+                     this.hideLoader();
+                     this.showButton();
                    } else if (this.state.confirmPassword !== '') {
                      // console.log('Confirm password : '+this.state.confirmPassword)
                      var userConfirmPassword = this.state.confirmPassword;
                    }
 
                    if (
-                     this.state.name !== '' &&
+                     userName !== '' &&
+                     PhoneNumber !== '' &&
                      userEmail !== '' &&
                      userPassword !== '' &&
                      userConfirmPassword !== ''
                    ) {
-                     var confName = this.state.name; //this is final
+                     var confName = userName; //this is final
                      var confEmail = userEmail; //this is final
-                     if (userPassword !== userConfirmPassword) {
-                       ToastAndroid.show(
-                         'Password do not match',
-                         ToastAndroid.SHORT,
-                       );
-                       var confPassword = '';
-                     }
+                     var confPhone = PhoneNumber; //this is final
 
-                     if (userPassword !== '') {
+                     if (userPassword === userConfirmPassword) {
                        if (userPassword.length >= 8) {
                          var correctPassword = userPassword; //this is final
                        } else {
@@ -139,54 +191,130 @@ export default class Register extends Component {
                            'Password length is less than 8 char please make it atleast 8 char long',
                            ToastAndroid.SHORT,
                          );
+                         var correctPassword = '';
+                         this.hideLoader();
+                         this.showButton();
                        }
                      } else {
                        ToastAndroid.show(
-                         'cool down bro do not press it too hard',
+                         'Password do not match',
                          ToastAndroid.SHORT,
                        );
+                       var correctPassword = '';
+                       this.hideLoader();
+                       this.showButton();
                      }
 
                      //make the wish
                      if (
                        confName !== '' &&
+                       confPhone !== '' &&
                        confEmail !== '' &&
                        correctPassword !== ''
                      ) {
-                       console.log("it's time to make the wish");
-                       // console.log({
-                       //   Name:confName,
-                       //   Email:confEmail,
-                       //   Password:correctPassword
-                       // })
                        auth()
                          .createUserWithEmailAndPassword(
                            confEmail,
                            correctPassword,
                          )
                          .then(() => {
-                           console.log('User account created & signed in!');
-                           ToastAndroid.show('welcome', ToastAndroid.SHORT);
-                           Actions.Users();
+                           firestore()
+                             .collection('Users')
+                             .add({
+                               name: confName,
+                               email: confEmail,
+                               phoneNumber: confPhone,
+                               password: correctPassword,
+                               profilePic:
+                                 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+                               gender: 'Unknown',
+                               isOnline: true,
+                               status: 'chilling',
+                               description: 'not available',
+                               lastSeen: moment().format(
+                                 'MMMM Do YYYY, h:mm:ss a',
+                               ),
+                               createdOn: moment()
+                                 .utcOffset('+05:30')
+                                 .format('MMMM Do YYYY, h:mm:ss a'),
+                               updatedOn: moment()
+                                 .utcOffset('+05:30')
+                                 .format('MMMM Do YYYY, h:mm:ss a')
+                             })
+                             .then(() => {
+                               database()
+                                 .ref('Users')
+                                 .set({
+                                   name: confName,
+                                   email: confEmail,
+                                   phoneNumber: confPhone,
+                                   password: correctPassword,
+                                   profilePic:
+                                     'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+                                   gender: 'Unknown',
+                                   isOnline: true,
+                                   status: 'chilling',
+                                   description: 'not available',
+                                   lastSeen: moment().format(
+                                     'MMMM Do YYYY, h:mm:ss a',
+                                   ),
+                                   createdOn: moment()
+                                     .utcOffset('+05:30')
+                                     .format('MMMM Do YYYY, h:mm:ss a'),
+                                   updatedOn: moment()
+                                     .utcOffset('+05:30')
+                                     .format('MMMM Do YYYY, h:mm:ss a'),
+                                 })
+                                 .then(() => {
+                                   console.log('Data set.');
+                                   Actions.Users();
+                                   ToastAndroid.show(
+                                     'welcome',
+                                     ToastAndroid.LONG,
+                                   );
+                                 })
+                                 .catch((e) => {
+                                   this.hideLoader();
+                                   this.showButton();
+                                   ToastAndroid.show(
+                                     'Oops, Something else happen please try again',
+                                     ToastAndroid.LONG,
+                                   );
+                                   console.log(e);
+                                 });
+                             })
+                             .catch((e) => {
+                               this.hideLoader();
+                               this.showButton();
+                               ToastAndroid.show(
+                                 'Oops, Something else happen please try again',
+                                 ToastAndroid.LONG,
+                               );
+                               console.log(e);
+                             });
                          })
                          .catch((error) => {
+                           this.hideLoader();
+                           this.showButton();
                            if (error.code === 'auth/email-already-in-use') {
-                             console.log('Email is already present');
                              ToastAndroid.show(
-                               'That email address is already in use!. Please try to login with this email',
-                               ToastAndroid.SHORT,
+                               'auth/email-already-in-use',
+                               ToastAndroid.LONG,
                              );
                            }
 
                            if (error.code === 'auth/invalid-email') {
-                             console.log('That email address is invalid!');
                              ToastAndroid.show(
-                               'The email address you provide is incorrect Please type the correct email',
-                               ToastAndroid.SHORT,
+                               'auth/invalid-email',
+                               ToastAndroid.LONG,
                              );
                            }
 
-                           //console.error(error);
+                           ToastAndroid.show(
+                             'Oops, Something else happen please try again',
+                             ToastAndroid.LONG,
+                           );
+                           console.log(error);
                          });
                      }
                    }
@@ -220,6 +348,17 @@ export default class Register extends Component {
                              }
                            />
                            <TextInput
+                             style={styles.input}
+                             placeholder={'Phone Number'}
+                             keyboardType={'numeric'}
+                             maxLength={10}
+                             placeholderTextColor={'rgba(255,255,255,0.7)'}
+                             underlineColorAndroid="transparent"
+                             onChangeText={(text) =>
+                               this.setState({phone: text})
+                             }
+                           />
+                           <TextInput
                              style={styles.inputPassword}
                              placeholder={'Password'}
                              secureTextEntry={true}
@@ -250,9 +389,15 @@ export default class Register extends Component {
                                />
                              }
                              title="Register        "
+                             disabled={this.state.showButton}
                              onPress={() => this._handlePress()}
                            />
-                           <ActivityIndicator animating={this.state.showLoader} size="small" color="#000000" hidesWhenStopped={true} />
+                           <ActivityIndicator
+                             animating={this.state.showLoader}
+                             size="small"
+                             color="#000000"
+                             hidesWhenStopped={true}
+                           />
                            <Text style={{color: 'black', textAlign: 'center'}}>
                              Already have an account &nbsp;
                              <Text

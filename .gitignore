@@ -1,5 +1,6 @@
 # OSX
 #
+
 .DS_Store
 
 # Xcode
@@ -28,7 +29,9 @@ build/
 .gradle
 #local.properties
 *.iml
-
+*.hprof
+yarn.lock
+package-lock.lock
 # node.js
 
 node_modules/
